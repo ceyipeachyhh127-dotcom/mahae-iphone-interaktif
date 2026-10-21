@@ -189,8 +189,6 @@
 		}
 
 		.player-controls .play-button { width: 48px; height: 48px; border-radius: 50%; background: #fff; color: #1c201b; font-size: 20px; }
-		.audio-picker { display: none; }
-
 		.notifications { display: grid; gap: 8px; margin-top: 15px; }
 
 		.notification {
@@ -266,7 +264,6 @@
 		.spotify-controls { display: flex; align-items: center; justify-content: center; gap: 35px; margin: 22px 0; }
 		.spotify-controls button { display: grid; width: 44px; height: 44px; place-items: center; border: 0; background: transparent; color: #fff; font-size: 20px; }
 		.spotify-controls .spotify-play { width: 54px; height: 54px; border-radius: 50%; background: #fff; color: #111; font-size: 21px; }
-		.spotify-file { align-self: center; padding: 10px 16px; border: 1px solid #ffffff3b; border-radius: 20px; background: transparent; color: white; font-size: 12px; }
 		.notes-screen { background: #f7f4e9; color: #24251f; }
 		.notes-titlebar { display: grid; grid-template-columns: 72px 1fr auto; align-items: center; gap: 8px; min-height: 42px; }
 		.notes-titlebar h1 { margin: 0; text-align: center; font-size: 18px; }
@@ -362,7 +359,6 @@
 			.spotify-controls { gap: 24px; margin: 12px 0; }
 			.spotify-controls button { width: 38px; height: 38px; }
 			.spotify-controls .spotify-play { width: 46px; height: 46px; }
-			.spotify-file { padding: 8px 14px; }
 		}
 
 		@media (max-width: 500px) {
@@ -401,7 +397,6 @@
 					<button type="button" class="play-button" id="playButton" aria-label="Putar lagu">▶</button>
 					<button type="button" id="forwardTen" aria-label="Maju 10 detik">▶▶</button>
 				</div>
-				<input class="audio-picker" id="audioPicker" type="file" accept="audio/*">
 				<audio id="audio" src="spotify-track.mp3" preload="metadata"></audio>
 			</section>
 
@@ -482,7 +477,6 @@
 				<button class="spotify-play" type="button" id="spotifyPlay" aria-label="Putar lagu">▶</button>
 				<button type="button" id="spotifyForwardTen" aria-label="Maju 10 detik">▶▶</button>
 			</div>
-			<button class="spotify-file" type="button" id="spotifyChooseFile">Pilih file musik</button>
 		</section>
 
 		<section class="screen notes-screen" id="notesScreen" aria-label="Catatan" hidden>
@@ -566,7 +560,6 @@
 		const homeTime = document.getElementById("homeTime");
 		const date = document.getElementById("date");
 		const audio = document.getElementById("audio");
-		const audioPicker = document.getElementById("audioPicker");
 		const playButton = document.getElementById("playButton");
 		const seek = document.getElementById("seek");
 		const spotifySeek = document.getElementById("spotifySeek");
@@ -636,10 +629,6 @@
 		}
 
 		async function toggleMusic() {
-			if (!audio.src) {
-				audioPicker.click();
-				return;
-			}
 			if (audio.paused) await audio.play();
 			else audio.pause();
 		}
@@ -1017,18 +1006,6 @@
 
 		playButton.addEventListener("click", toggleMusic);
 		spotifyPlay.addEventListener("click", toggleMusic);
-		document.getElementById("spotifyChooseFile").addEventListener("click", () => audioPicker.click());
-
-		audioPicker.addEventListener("change", () => {
-			const file = audioPicker.files[0];
-			if (!file) return;
-			audio.src = URL.createObjectURL(file);
-			document.getElementById("trackTitle").textContent = file.name.replace(/\.[^.]+$/, "");
-			document.getElementById("trackArtist").textContent = "File lokal";
-			document.getElementById("spotifyTrackTitle").textContent = file.name.replace(/\.[^.]+$/, "");
-			document.getElementById("spotifyTrackArtist").textContent = "File lokal";
-			audio.load();
-		});
 
 		audio.addEventListener("play", () => updatePlayButtons(true));
 		audio.addEventListener("pause", () => updatePlayButtons(false));
