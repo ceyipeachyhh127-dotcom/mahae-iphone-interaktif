@@ -74,6 +74,7 @@
 
 		.screen::-webkit-scrollbar { display: none; }
 		.screen[hidden] { display: none; }
+		.lock-screen { touch-action: none; overscroll-behavior: contain; }
 
 		.status-bar {
 			display: flex;
@@ -559,6 +560,7 @@
 
 	<script>
 		const phone = document.getElementById("phone");
+		const lockScreen = document.getElementById("lockScreen");
 		const clock = document.getElementById("clock");
 		const statusTime = document.getElementById("statusTime");
 		const homeTime = document.getElementById("homeTime");
@@ -926,13 +928,14 @@
 			chatSearchEmpty.hidden = visibleChats > 0;
 		});
 
-		phone.addEventListener("pointerdown", (event) => { touchStartY = event.clientY; });
-		phone.addEventListener("pointerup", (event) => {
-			if (touchStartY !== null && touchStartY - event.clientY > 60 && !phone.classList.contains("chat-open") && !phone.classList.contains("inbox-open")) {
+		lockScreen.addEventListener("pointerdown", (event) => { touchStartY = event.clientY; });
+		lockScreen.addEventListener("pointerup", (event) => {
+			if (touchStartY !== null && touchStartY - event.clientY > 60) {
 				openPasscode();
 			}
 			touchStartY = null;
 		});
+		lockScreen.addEventListener("pointercancel", () => { touchStartY = null; });
 
 		document.querySelectorAll("[data-key]").forEach((button) => {
 			button.addEventListener("click", () => enterPasscodeDigit(button.dataset.key));
